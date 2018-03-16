@@ -1,0 +1,23 @@
+server {
+    listen 80;
+    server_name hugosandelius.se;
+
+    location /static {
+        root /;
+    }
+
+    location /hatify {
+        proxy_pass http://hatify;
+        proxy_set_header Host $host;
+    }
+
+    location /musclify {
+        proxy_pass http://hatify;
+        proxy_set_header Host $host;
+    }
+
+    location /tagga/ {
+        proxy_pass http://tagga;
+        proxy_set_header Host $host;
+    }
+}

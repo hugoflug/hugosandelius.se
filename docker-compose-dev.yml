@@ -1,0 +1,8 @@
+version: '2'
+services:
+  hatify:
+    volumes: 
+      - /static
+  nginx:
+  	volumes:
+  	  - /static
