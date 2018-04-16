@@ -1,0 +1,15 @@
+[Unit]
+Description=uWSGI instance to serve hatify
+After=network.target
+
+[Service]
+User=root
+Group=root
+WorkingDirectory=/root/hatify
+ExecStart=/usr/local/bin/uwsgi --ini uwsgi.ini
+Restart=always
+Environment=URL_ROOT=http://hugosandelius.se/
+Environment=FILES_DIR=static
+
+[Install]
+WantedBy=multi-user.target

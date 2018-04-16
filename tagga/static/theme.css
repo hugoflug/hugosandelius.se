@@ -1,0 +1,118 @@
+@import url(https://fonts.googleapis.com/css?family=Open+Sans);
+
+body {
+    background: #f2f2f2;
+    font-family: 'Open Sans', sans-serif;
+}
+
+.search {
+    width: 100%;
+    position: relative
+}
+
+.searchTerm {
+    float: left;
+    width: 100%;
+    border: 3px solid #000000;
+    padding: 5px;
+    height: 50px;
+    border-radius: 5px;
+    outline: none;
+    font-size: 20px;
+    color: #D3D3D3;
+}
+
+.searchTerm:focus{
+    color: #000000;
+}
+
+.searchButton {
+    position: absolute;  
+    right: -115px;
+    width: 100px;
+    height: 50px;
+    border: 1px solid #000000;
+    background: #000000;
+    text-align: center;
+    color: #fff;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 20px;
+}
+
+.wrap{
+    width: 35%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+@media (max-width: 1000px) {
+    .wrap {
+        width: 65%;
+    }
+}
+
+@media (max-width: 820px) {
+    .searchButton {
+        width: 50px;
+        right: -50px;
+        font-size: 10px;
+    }
+}
+
+.taggwrap{
+    width: 100%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.taggWord {
+    animation: blink 0.75s linear infinite;
+}
+
+@keyframes blink {
+    0% { color: black; }
+    50% { color: black; }
+    50.01% { color: red; }
+    100% { color: red; }
+}
+
+.taggtext{
+    font-size: 70px;
+    text-align: center;
+}
+
+.marquee {
+    height: 30px;
+    width: 500px;
+
+    margin: 0 auto;
+    
+    overflow: hidden;
+    position: relative;
+}
+
+.marquee div {
+    display: block;
+    width: 200%;
+    height: 30px;
+    
+    position: absolute;
+    overflow: hidden;
+
+    animation: marquee 4s linear infinite;
+}
+
+.marquee span {
+    float: left;
+    width: 50%;
+}
+
+@keyframes marquee {
+    0% { left: 0; }
+    100% { left: -100%; }
+}

@@ -1,20 +1,22 @@
-version: '2'
+version: '3'
 services:
   hatify:
     image: hugosandelius/hugosandelius.se:hatify
-    build: ../hatify
+    build: hatify
     restart: always
     volumes:
-      - /var/static:/static
+      - static:/static
   tagga:
     image: hugosandelius/hugosandelius.se:tagga
-    build: ../tagga
+    build: tagga
     restart: always
   nginx: 
     image: hugosandelius/hugosandelius.se:nginx 
     build: nginx
     restart: always
     volumes:
-      - /var/static:/static
+      - static:/static
     ports:
       - "80:80"
+volumes:
+  static:

@@ -16,7 +16,7 @@ server {
         proxy_set_header Host $host;
     }
 
-    location /tagga/ {
+    location /tagga {
         proxy_pass http://tagga;
         proxy_set_header Host $host;
     }
