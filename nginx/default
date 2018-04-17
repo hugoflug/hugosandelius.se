@@ -1,6 +1,6 @@
 server {
     listen 80;
-    server_name hugosandelius.se;
+    #server_name hugosandelius.se;
 
     location /static {
         root /;

@@ -1,0 +1,8 @@
+version: '3'
+services:
+  hatify:
+    build: hatify
+  tagga:
+    build: tagga
+  nginx:  
+    build: nginx
