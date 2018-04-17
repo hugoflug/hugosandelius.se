@@ -4,8 +4,9 @@ services:
   - docker
 before_script:
   - docker login -u hugosandelius -p $DOCKERHUB_PASSWD
-  - docker-compose pull 
+  - docker-compose pull
 script:
+  - docker images
   - docker-compose build
   - docker-compose push
 deploy:
