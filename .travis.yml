@@ -1,0 +1,13 @@
+language: generic
+sudo: required
+services:
+  - docker
+before_script:
+  # TODO: fill in
+  #- docker login
+script:
+  - docker-compose build
+  #- docker-compose push
+deploy:
+  # TODO: ssh key stuff
+  #- scp docker-compose.yml root@hugosandelius.se:~ && ssh 'docker-compose up -d'
