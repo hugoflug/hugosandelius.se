@@ -4,6 +4,7 @@ services:
   - docker
 before_script:
   - docker login -u hugosandelius -p $DOCKERHUB_PASSWD
+  - docker-compose pull
 script:
   - docker build nginx --cache-from hugosandelius/hugosandelius.se -t hugosandelius/hugosandelius.se:nginx
   - docker build hatify --cache-from hugosandelius/hugosandelius.se -t hugosandelius/hugosandelius.se:hatify
