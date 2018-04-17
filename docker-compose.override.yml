@@ -1,8 +1,17 @@
-version: '3'
+version: '3.2'
 services:
   hatify:
-    build: hatify
+    build: 
+      context: hatify
+      cache_from:
+        - hugosandelius/hugosandelius.se:hatify
   tagga:
-    build: tagga
+    build: 
+      context: tagga
+      cache_from:
+        - hugosandelius/hugosandelius.se:tagga
   nginx:  
-    build: nginx
+    build: 
+      context: nginx
+      cache_from:
+        - hugosandelius/hugosandelius.se:nginx
