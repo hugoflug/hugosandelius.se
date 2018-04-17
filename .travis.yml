@@ -6,9 +6,9 @@ before_script:
   - docker login -u hugosandelius -p $DOCKERHUB_PASSWD
   - docker-compose pull
 script:
-  - docker build nginx --cache-from hugosandelius/hugosandelius.se -t hugosandelius/hugosandelius.se:nginx
-  - docker build hatify --cache-from hugosandelius/hugosandelius.se -t hugosandelius/hugosandelius.se:hatify
-  - docker build tagga --cache-from hugosandelius/hugosandelius.se -t hugosandelius/hugosandelius.se:tagga
+  - docker build nginx --cache-from hugosandelius/hugosandelius.se:nginx -t hugosandelius/hugosandelius.se:nginx
+  - docker build hatify --cache-from hugosandelius/hugosandelius.se:hatify -t hugosandelius/hugosandelius.se:hatify
+  - docker build tagga --cache-from hugosandelius/hugosandelius.se:tagga -t hugosandelius/hugosandelius.se:tagga
   - docker-compose push
 deploy:
   # TODO: ssh key stuff
