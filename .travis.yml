@@ -6,6 +6,7 @@ before_script:
   - docker login -u hugosandelius -p $DOCKERHUB_PASSWD
   - docker-compose pull
 script:
+  - docker version
   - docker images -a
   - docker-compose build
   - docker-compose push
