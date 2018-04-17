@@ -4,11 +4,10 @@ services:
   - docker
 before_script:
   - docker login -u hugosandelius -p $DOCKERHUB_PASSWD
-  - docker-compose pull
 script:
-  - docker version
-  - docker images -a
-  - docker-compose build
+  - docker build -t hugosandelius/hugosandelius.se:nginx --cache-from hugosandelius/hugosandelius.se:nginx
+  - docker build -t hugosandelius/hugosandelius.se:hatify --cache-from hugosandelius/hugosandelius.se:hatify
+  - docker build -t hugosandelius/hugosandelius.se:tagga --cache-from hugosandelius/hugosandelius.se:tagga
   - docker-compose push
 deploy:
   # TODO: ssh key stuff
