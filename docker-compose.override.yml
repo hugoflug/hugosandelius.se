@@ -4,14 +4,14 @@ services:
     build: 
       context: hatify
       cache_from:
-        - hugosandelius/hugosandelius.se:hatify
+        - hugosandelius/hatify
   tagga:
     build: 
       context: tagga
       cache_from:
-        - hugosandelius/hugosandelius.se:tagga
+        - hugosandelius/tagga
   nginx:  
     build: 
       context: nginx
       cache_from:
-        - hugosandelius/hugosandelius.se:nginx
+        - hugosandelius/nginx

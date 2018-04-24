@@ -1,15 +1,15 @@
 version: '3.2'
 services:
   hatify:
-    image: hugosandelius/hugosandelius.se:hatify
+    image: hugosandelius/hatify
     restart: always
     volumes:
       - static:/static
   tagga:
-    image: hugosandelius/hugosandelius.se:tagga
+    image: hugosandelius/tagga
     restart: always
   nginx: 
-    image: hugosandelius/hugosandelius.se:nginx 
+    image: hugosandelius/nginx 
     restart: always
     ports: 
       - "80:80"
