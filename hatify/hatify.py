@@ -110,7 +110,7 @@ predict_face_shape = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat
 
 def get_face_shape(image):
     img = numpy.array(image.convert('L'))
-    faces = detect_faces(img, 2)
+    faces = detect_faces(img)
 
     if len(faces) == 0:
         return None
