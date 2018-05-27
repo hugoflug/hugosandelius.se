@@ -11,7 +11,7 @@ services:
   leet:
     image: hugosandelius/1337
     environment:
-      - TOKEN
+      - SLACK_API_TOKEN
       - CACHE_DIR=/cache
     volumes:
       - leetcache:/cache

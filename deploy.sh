@@ -2,4 +2,4 @@
 set -ex
 
 scp docker-compose.yml root@hugosandelius.se:~
-ssh root@hugosandelius.se "docker login -u hugosandelius -p $DOCKERHUB_PASSWD && docker-compose pull && docker-compose up -d"
+ssh root@hugosandelius.se "export SLACK_API_TOKEN=${SLACK_API_TOKEN} && docker-compose pull && docker-compose up -d"
