@@ -7,17 +7,26 @@ import os
 from datetime import datetime
 from collections import Counter
 from operator import itemgetter
-from flask import Flask, request, jsonify, render_template
+from flask import Flask, request, jsonify, render_template, send_from_directory
 
 WEB_API_TOKEN = os.environ["TOKEN"]
 CACHE_DIR = os.getenv("CACHE_DIR", ".")
 
 app = Flask(__name__)
 
-
 @app.route('/')
+@app.route('/1337/')
 def index():
-    return render_template('index.html', toplist=top1337())
+    return render_template('index.html', toplist=format1337(top1337()))
+
+@app.route('/1337/static/<path:path>')
+def serve_static(path):
+    return send_from_directory("static", path)
+
+@app.after_request
+def add_cache_control_header(r):
+    r.headers['Cache-Control'] = 'no-cache'
+    return r
 
 def get_name_dic():
     name_dic = {}
@@ -32,6 +41,19 @@ def get_name_dic():
     return name_dic
 
 name_dic = get_name_dic()
+
+def format1337(toplist):
+    formatted = []
+    index = 0
+    last_count = None
+    for name, count in toplist:
+        if count != last_count:
+            index += 1
+        last_count = count
+
+        formatted.append({"index" : index, "name" : name, "count": count})
+    return formatted
+
 
 def top1337():
     tz = pytz.timezone("Europe/Stockholm")

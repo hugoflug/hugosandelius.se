@@ -1,5 +1,11 @@
-<ul>
+<head>
+  <link rel="stylesheet" type="text/css" href="static/theme.css">
+</head>
+
+<h1>The 1337 toplist</h1>
+
+<ul class="leetlist">
 	{% for item in toplist %}
-		<li>{{item.0}} ({{item.1}})</li>
+		<li>{{item.index}}: {{item.name}} ({{item.count}})</li>
 	{% endfor %}
 </ul>

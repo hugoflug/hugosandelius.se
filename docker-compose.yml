@@ -8,6 +8,14 @@ services:
   tagga:
     image: hugosandelius/tagga
     restart: always
+  leet:
+    image: hugosandelius/1337
+    environment:
+      - TOKEN
+      - CACHE_DIR=/cache
+    volumes:
+      - leetcache:/cache
+    restart: always
   nginx: 
     image: hugosandelius/nginx 
     restart: always
@@ -17,3 +25,4 @@ services:
       - static:/static
 volumes:
   static:
+  leetcache:

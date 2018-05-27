@@ -10,6 +10,11 @@ services:
       context: tagga
       cache_from:
         - hugosandelius/tagga
+  leet:
+    build:
+      context: '1337'
+      cache_from:
+        - hugosandelius/1337
   nginx:  
     build: 
       context: nginx

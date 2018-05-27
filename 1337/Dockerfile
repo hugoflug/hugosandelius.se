@@ -8,6 +8,7 @@ COPY requirements.txt .
 RUN pip3 install -r requirements.txt
 
 COPY 1337.py .
+COPY static ./static
 COPY templates ./templates
 
 ENV CACHE_DIR=/cache LANG=C.UTF-8

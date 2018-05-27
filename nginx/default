@@ -1,9 +1,12 @@
 server {
     listen 80;
-    #server_name hugosandelius.se;
+
+    location / {
+        alias /site/;
+    }
 
     location /static {
-        root /;
+        alias /static/;
     }
 
     location /hatify {
@@ -18,6 +21,11 @@ server {
 
     location /tagga {
         proxy_pass http://tagga;
+        proxy_set_header Host $host;
+    }
+
+    location /1337 {
+        proxy_pass http://leet;
         proxy_set_header Host $host;
     }
 }
