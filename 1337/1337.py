@@ -12,6 +12,16 @@ from flask import Flask, request, jsonify, render_template, send_from_directory
 WEB_API_TOKEN = os.environ["SLACK_API_TOKEN"]
 CACHE_DIR = os.getenv("CACHE_DIR", ".")
 
+EMOJIS = [
+    "https://emoji.slack-edge.com/T0QJDQ4MC/hackerman-matrix/79021d6f4a7c07e4.gif",
+    "https://emoji.slack-edge.com/T0QJDQ4MC/hackerman_triggered/b1951faae08e5b77.gif",
+    "https://emoji.slack-edge.com/T0QJDQ4MC/hackerman/bd0c31e800d5de3f.png",
+    "https://emoji.slack-edge.com/T0QJDQ4MC/neckbeard_borgen/c9b3bdce923311ab.png",
+    "https://emoji.slack-edge.com/T0QJDQ4MC/neckbeard/c8ec7bf188.png"
+]
+
+SCRUB_EMOJI = "https://emoji.slack-edge.com/T0QJDQ4MC/sylten/d99fe0d901f540a2.jpg"
+
 app = Flask(__name__)
 
 @app.route('/')
@@ -47,11 +57,11 @@ def format1337(toplist):
     index = 0
     last_count = None
     for name, count in toplist:
-        if count != last_count:
-            index += 1
+        index += 1
         last_count = count
 
-        formatted.append({"index" : index, "name" : name, "count": count})
+        emoji = EMOJIS[index - 1] if index - 1 < len(EMOJIS) else SCRUB_EMOJI
+        formatted.append({"name" : name, "img" : emoji, "count" : count})
     return formatted
 
 
@@ -105,5 +115,9 @@ def top1337():
             "top" : dict(leetcount)    
         }
         json.dump(cache_data, cache)
+
+    for name in name_dic.values():
+        if name not in leetcount:
+            leetcount[name] = 0 
 
     return sorted(leetcount.items(), key=itemgetter(1), reverse=True)
