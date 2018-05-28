@@ -3,10 +3,13 @@ h1 {
 }
 
 .leetlist {
-    font-size: 25px;
-    text-align: center;
+    font-size: 28px;
+    text-align: left;
     list-style: none;
+    display: table;
+    margin: 0 auto;
 }
+
 
 body {
     background-color: black;
