@@ -12,7 +12,6 @@ services:
     image: hugosandelius/1337
     environment:
       - SLACK_API_TOKEN
-      - CACHE_DIR=/cache
     volumes:
       - leetcache:/cache
     restart: always

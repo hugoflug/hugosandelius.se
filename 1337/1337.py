@@ -66,10 +66,15 @@ def format1337(toplist):
         formatted.append({"name" : name, "img" : emoji, "count" : count})
     return formatted
 
+def ts_to_datetime(ts):
+    tz = pytz.timezone("Europe/Stockholm")
+    unix_ts = float(ts.split(".")[0])
+    return datetime.fromtimestamp(unix_ts, tz)
+
+def is_1337(dt):
+    return dt.time().hour == 13 and dt.time().minute == 37
 
 def top1337():
-    tz = pytz.timezone("Europe/Stockholm")
-
     try:
         with open(CACHE_DIR + "/1337.json") as cache:
             cache_json = json.load(cache)
@@ -83,6 +88,8 @@ def top1337():
     first_ts = None
     last_ts = None
     last_leet_date = None
+    lastleeter = None
+    limit_date = ts_to_datetime(limit_ts)
 
     while not resp or (resp["has_more"] and first_ts > limit_ts):
         response = requests.get("https://slack.com/api/channels.history", 
@@ -97,19 +104,25 @@ def top1337():
             first_ts = msg["ts"]
 
             if not last_ts:
-                last_ts = first_ts
+                last_ts = msg["ts"]
 
             if first_ts <= limit_ts:
                 break
 
-            unix_ts = float(first_ts.split(".")[0])
-            dt = datetime.fromtimestamp(unix_ts, tz)
+            dt = ts_to_datetime(first_ts)
 
-            if "user" in msg and dt.time().hour == 13 and dt.time().minute == 37 and dt.date() != last_leet_date:
-                last_leet_date = dt.date()
-                leetcount[name_dic[msg["user"]]] += 1
+            if "user" in msg and is_1337(dt) and dt.date() != last_leet_date and limit_date != dt.date():
+                lastleeter = msg["user"]
+                
+            if (not is_1337(dt)) and lastleeter:
+                leetcount[name_dic[lastleeter]] += 1
+                lastleeter = None
 
         time.sleep(1)
+
+    if lastleeter:
+        leetcount[name_dic[lastleeter]] += 1
+        lastleeter = None
 
     with open(CACHE_DIR + "/1337.json", "w") as cache:
         cache_data = {
