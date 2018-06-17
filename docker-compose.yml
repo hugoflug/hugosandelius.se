@@ -2,22 +2,22 @@ version: '3.2'
 services:
   hatify:
     image: hugosandelius/hatify
-    restart: always
+    restart: unless-stopped
     volumes:
       - static:/static
   tagga:
     image: hugosandelius/tagga
-    restart: always
+    restart: unless-stopped
   leet:
     image: hugosandelius/1337
     environment:
       - SLACK_API_TOKEN
     volumes:
       - leetcache:/cache
-    restart: always
+    restart: unless-stopped
   nginx: 
     image: hugosandelius/nginx 
-    restart: always
+    restart: unless-stopped
     ports: 
       - "80:80"
     volumes:
