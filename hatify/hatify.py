@@ -11,8 +11,8 @@ import random
 import math
 import traceback
 from threading import Thread
-from PIL import Image, ImageFilter, ImageDraw
-from flask import Flask, jsonify, request, send_from_directory, send_file
+from PIL import Image, ImageDraw
+from flask import Flask, request, send_from_directory, send_file
 
 app = Flask(__name__)
 

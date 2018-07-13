@@ -2,12 +2,11 @@ import requests
 import json
 import pytz
 import time
-import os.path
 import os
 from datetime import datetime
 from collections import Counter
 from operator import itemgetter
-from flask import Flask, request, jsonify, render_template, send_from_directory
+from flask import Flask, render_template, send_from_directory
 
 WEB_API_TOKEN = os.environ["SLACK_API_TOKEN"]
 CACHE_DIR = os.getenv("CACHE_DIR", ".")
