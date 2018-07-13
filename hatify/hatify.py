@@ -140,7 +140,7 @@ def find_bbox(points):
     y_min = min(p[1] for p in points)
     y_max = max(p[1] for p in points)
 
-    return (x_min, y_min, x_max, y_max)
+    return x_min, y_min, x_max, y_max
 
 
 def crop_polygon(image, points):
@@ -199,7 +199,8 @@ def enhance(image):
 
 
 SEARCH_ENGINE_URL = "https://api.qwant.com/api/search/images"
-CHROME_USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.1 Safari/537.36"
+CHROME_USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) " \
+                    "Chrome/41.0.2227.1 Safari/537.36"
 
 
 def search_image(query, start_index=0):
@@ -220,7 +221,7 @@ def search_image(query, start_index=0):
         img_url = result["media"]
         try:
             img_response = requests.get(img_url, headers={'User-Agent': CHROME_USER_AGENT})
-        except ConnectionError as e:
+        except ConnectionError:
             continue
 
         if img_response.status_code == 200:
@@ -228,7 +229,7 @@ def search_image(query, start_index=0):
 
 
 def within_range(value, reference, _range):
-    return value > reference - _range and value < reference + _range
+    return reference - _range < value < reference + _range
 
 
 COLOR_DIFF_RANGE = 15
@@ -345,7 +346,7 @@ def find_nontransparent_bbox(image):
                 if y < min_y:
                     min_y = y
 
-    return (min_x, min_y, max_x, max_y)
+    return min_x, min_y, max_x, max_y
 
 
 def hatify(query, hat_query):
@@ -398,7 +399,6 @@ def musclify(query, guy_query="muscle guy"):
 
     muscles_bbox = find_bbox(muscles_face_shape)
 
-    face = None
     for image in search_image(query):
         og_face_shape = get_face_shape(image)
         if not og_face_shape:

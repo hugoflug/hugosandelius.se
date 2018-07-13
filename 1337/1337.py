@@ -42,16 +42,16 @@ def add_cache_control_header(r):
 
 
 def get_name_dic():
-    name_dic = {}
+    name_dict = {}
 
     response = requests.get("https://slack.com/api/users.list",
                             params={"token": WEB_API_TOKEN})
 
     resp = json.loads(response.text)
     for member in resp["members"]:
-        name_dic[member["id"]] = member["name"]
+        name_dict[member["id"]] = member["name"]
 
-    return name_dic
+    return name_dict
 
 
 name_dic = get_name_dic()
@@ -59,15 +59,14 @@ name_dic = get_name_dic()
 
 def format1337(toplist):
     formatted = []
-    index = 0
-    last_count = None
+    list_index = 0
     for name, count in toplist:
-        index += 1
+        list_index += 1
 
         if count == 0:
             emoji = SCRUB_EMOJI
         else:
-            emoji = EMOJIS[index - 1] if index - 1 < len(EMOJIS) else EMOJIS[-1]
+            emoji = EMOJIS[list_index - 1] if list_index - 1 < len(EMOJIS) else EMOJIS[-1]
         formatted.append({"name": name, "img": emoji, "count": count})
     return formatted
 
@@ -130,7 +129,6 @@ def top1337():
 
     if lastleeter:
         leetcount[name_dic[lastleeter]] += 1
-        lastleeter = None
 
     with open(CACHE_DIR + "/1337.json", "w") as cache:
         cache_data = {
