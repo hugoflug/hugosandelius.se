@@ -16,6 +16,7 @@ from flask import Flask, jsonify, request, send_from_directory, send_file
 
 app = Flask(__name__)
 
+
 def send_response(out_dir, request_url_root, request_text, response_url, username):
     try:
         query, hat_query = request_text.split('/')
@@ -27,15 +28,16 @@ def send_response(out_dir, request_url_root, request_text, response_url, usernam
 
         img_url = request_url_root + "static/" + urllib.parse.quote(outfilename)
 
-        requests.post(response_url, json = {
+        requests.post(response_url, json={
             'response_type': 'in_channel',
             'text': "Summoned by *" + username + "*\n" + img_url
         })
     except Exception as e:
         traceback.print_exc()
-        requests.post(response_url, json = {
+        requests.post(response_url, json={
             'text': "ERROR: " + str(e)
         })
+
 
 @app.route("/hatify", methods=['POST'])
 def hatify_resource():
@@ -49,6 +51,7 @@ def hatify_resource():
 
     return "Hold on..."
 
+
 @app.route("/hatify/<string:person>/<string:hat>", methods=['GET'])
 def hatify_get(person, hat):
     try:
@@ -59,6 +62,7 @@ def hatify_get(person, hat):
     except Exception as e:
         traceback.print_exc()
         return str(e)
+
 
 @app.route("/musclify/<string:person>", methods=['GET'])
 def musclify_get(person):
@@ -71,6 +75,7 @@ def musclify_get(person):
         traceback.print_exc()
         return str(e)
 
+
 def send_musclify_response(out_dir, request_url_root, request_text, response_url, username):
     try:
         outfilename = request_text + str(random.randint(0, 100000)) + ".png"
@@ -80,15 +85,16 @@ def send_musclify_response(out_dir, request_url_root, request_text, response_url
 
         img_url = request_url_root + "static/" + urllib.parse.quote(outfilename)
 
-        requests.post(response_url, json = {
+        requests.post(response_url, json={
             'response_type': 'in_channel',
             'text': "Summoned by *" + username + "*\n" + img_url
         })
     except Exception as e:
         traceback.print_exc()
-        requests.post(response_url, json = {
+        requests.post(response_url, json={
             'text': "ERROR: " + str(e)
         })
+
 
 @app.route("/musclify", methods=["POST"])
 def musclify_resource():
@@ -98,18 +104,22 @@ def musclify_resource():
 
     out_dir = os.environ.get('FILES_DIR', "static")
 
-    thread = Thread(target=send_musclify_response, args=(out_dir, request.url_root, request_text, response_url, username))
+    thread = Thread(target=send_musclify_response,
+                    args=(out_dir, request.url_root, request_text, response_url, username))
     thread.start()
 
     return "Hold on..."
+
 
 @app.route('/static/<path:path>')
 def serve_static(path):
     static_dir = os.environ.get('FILES_DIR', "static")
     return send_from_directory(static_dir, path)
 
+
 detect_faces = dlib.get_frontal_face_detector()
 predict_face_shape = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")
+
 
 def get_face_shape(image):
     img = numpy.array(image.convert('L'))
@@ -123,6 +133,7 @@ def get_face_shape(image):
 
     return pointlist[17:26] + list(reversed(pointlist[0:17]))
 
+
 def find_bbox(points):
     x_min = min(p[0] for p in points)
     x_max = max(p[0] for p in points)
@@ -130,6 +141,7 @@ def find_bbox(points):
     y_max = max(p[1] for p in points)
 
     return (x_min, y_min, x_max, y_max)
+
 
 def crop_polygon(image, points):
     im_array = numpy.asarray(image)
@@ -139,10 +151,11 @@ def crop_polygon(image, points):
     mask = numpy.array(mask_im)
 
     new_im_array = numpy.empty(im_array.shape, dtype='uint8')
-    new_im_array[:,:,:3] = im_array[:,:,:3]
-    new_im_array[:,:,3] = mask*255          
-    
+    new_im_array[:, :, :3] = im_array[:, :, :3]
+    new_im_array[:, :, 3] = mask * 255
+
     return Image.fromarray(new_im_array, "RGBA")
+
 
 def find_face(image):
     face_shape = get_face_shape(image)
@@ -152,6 +165,7 @@ def find_face(image):
 
     new_image = crop_polygon(image, face_shape)
     return new_image.crop(find_bbox(face_shape))
+
 
 def enhance(image):
     maxval = 0
@@ -170,26 +184,28 @@ def enhance(image):
             if g < minval:
                 minval = g
             if b < minval:
-                minval = b 
+                minval = b
     interval = maxval - minval
     mul = 255.0 / interval
 
     source = image.split()
     r, g, b = 0, 1, 2
 
-    source[r].paste(source[r].point(lambda x: min(255, int((x - minval)*mul))))
-    source[g].paste(source[g].point(lambda x: min(255, int((x - minval)*mul))))
-    source[b].paste(source[b].point(lambda x: min(255, int((x - minval)*mul))))
+    source[r].paste(source[r].point(lambda x: min(255, int((x - minval) * mul))))
+    source[g].paste(source[g].point(lambda x: min(255, int((x - minval) * mul))))
+    source[b].paste(source[b].point(lambda x: min(255, int((x - minval) * mul))))
 
     return Image.merge(image.mode, source)
+
 
 SEARCH_ENGINE_URL = "https://api.qwant.com/api/search/images"
 CHROME_USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2227.1 Safari/537.36"
 
+
 def search_image(query, start_index=0):
-    response = requests.get(SEARCH_ENGINE_URL, 
-        headers={'User-Agent' : CHROME_USER_AGENT},
-        params={"count" : 50, "q" : query})
+    response = requests.get(SEARCH_ENGINE_URL,
+                            headers={'User-Agent': CHROME_USER_AGENT},
+                            params={"count": 50, "q": query})
 
     if response.status_code != 200:
         if response.status_code == 429:
@@ -203,17 +219,20 @@ def search_image(query, start_index=0):
     for result in results[start_index:]:
         img_url = result["media"]
         try:
-            img_response = requests.get(img_url, headers={'User-Agent' : CHROME_USER_AGENT})
+            img_response = requests.get(img_url, headers={'User-Agent': CHROME_USER_AGENT})
         except ConnectionError as e:
             continue
 
         if img_response.status_code == 200:
             yield Image.open(io.BytesIO(img_response.content)).convert("RGBA")
 
+
 def within_range(value, reference, _range):
     return value > reference - _range and value < reference + _range
 
+
 COLOR_DIFF_RANGE = 15
+
 
 def make_bg_transparent_and_crop(image):
     pixdata = image.load()
@@ -244,6 +263,7 @@ def make_bg_transparent_and_crop(image):
 
     return image.crop((min_x, min_y, max_x, max_y))
 
+
 def get_hat(query):
     hat = next(search_image(query), None)
 
@@ -251,6 +271,7 @@ def get_hat(query):
         return None
 
     return make_bg_transparent_and_crop(hat)
+
 
 def find_bottom_nontransparent_pos(image):
     pixdata = image.load()
@@ -269,12 +290,14 @@ def find_bottom_nontransparent_pos(image):
                     bottompositions.append((x, y))
 
     if len(bottompositions) == 0:
-        return int(width/2), height - 1
+        return int(width / 2), height - 1
 
-    return bottompositions[int(len(bottompositions)/2) + 1] 
+    return bottompositions[int(len(bottompositions) / 2) + 1]
+
 
 LEFT_EYEBROW_RIGHT_END = 4
 RIGHT_EYEBROW_LEFT_END = 5
+
 
 def add_hat(image, original_image, hat_image):
     face_shape = get_face_shape(original_image)
@@ -285,16 +308,18 @@ def add_hat(image, original_image, hat_image):
 
     lere = (face_shape[LEFT_EYEBROW_RIGHT_END][0] - x_offset, face_shape[LEFT_EYEBROW_RIGHT_END][1] - y_offset)
     rele = (face_shape[RIGHT_EYEBROW_LEFT_END][0] - x_offset, face_shape[RIGHT_EYEBROW_LEFT_END][1] - y_offset)
-    hatpos_x = int((lere[0] + rele[0])/2)
-    hatpos_y = int((lere[1] + rele[1])/2) + int(hat_image.height/20)
+    hatpos_x = int((lere[0] + rele[0]) / 2)
+    hatpos_y = int((lere[1] + rele[1]) / 2) + int(hat_image.height / 20)
 
     bottom = find_bottom_nontransparent_pos(hat_image)
 
-    new_image = Image.new(image.mode, (image.width*2, image.height*2))
-    new_image.paste(image, (int(image.width/2), image.height))
-    new_image.paste(hat_image, (int(image.width/2) + hatpos_x - bottom[0], image.height + hatpos_y - bottom[1]), hat_image)
+    new_image = Image.new(image.mode, (image.width * 2, image.height * 2))
+    new_image.paste(image, (int(image.width / 2), image.height))
+    new_image.paste(hat_image, (int(image.width / 2) + hatpos_x - bottom[0], image.height + hatpos_y - bottom[1]),
+                    hat_image)
 
     return new_image
+
 
 def find_nontransparent_bbox(image):
     pixdata = image.load()
@@ -322,6 +347,7 @@ def find_nontransparent_bbox(image):
 
     return (min_x, min_y, max_x, max_y)
 
+
 def hatify(query, hat_query):
     face = None
     for image in search_image(query):
@@ -342,11 +368,13 @@ def hatify(query, hat_query):
     combined = add_hat(face, image, hat)
 
     img_bbox = find_nontransparent_bbox(combined)
-    #combined.thumbnail((128, 128))
+    # combined.thumbnail((128, 128))
     return combined.crop(img_bbox)
+
 
 def get_random_image(query):
     yield from search_image(query, start_index=random.randint(0, 20))
+
 
 def get_rotation(face_shape):
     xre = face_shape[RIGHT_EDGE][0]
@@ -357,10 +385,10 @@ def get_rotation(face_shape):
     return math.degrees(math.atan2(yle - yre, xre - xle))
 
 
-
 RIGHT_EDGE = 10
 LEFT_EDGE = -1
 CHIN_BOTTOM = -8
+
 
 def musclify(query, guy_query="muscle guy"):
     for muscles in get_random_image(guy_query):
@@ -386,18 +414,19 @@ def musclify(query, guy_query="muscle guy"):
     if not face_shape:
         raise Exception("No face found for " + query)
 
-    rot_face_image = face_image.rotate(get_rotation(muscles_face_shape) - get_rotation(face_shape), resample=Image.BILINEAR)
+    rot_face_image = face_image.rotate(get_rotation(muscles_face_shape) - get_rotation(face_shape),
+                                       resample=Image.BILINEAR)
     rot_face_shape = get_face_shape(face_image)
 
     if rot_face_shape:
         face_image = rot_face_image
         face_shape = rot_face_shape
 
-    muscles.paste(face_image, (muscles_face_shape[CHIN_BOTTOM][0] - face_shape[CHIN_BOTTOM][0], muscles_face_shape[CHIN_BOTTOM][1] - face_shape[CHIN_BOTTOM][1]), face_image)
+    muscles.paste(face_image, (muscles_face_shape[CHIN_BOTTOM][0] - face_shape[CHIN_BOTTOM][0],
+                               muscles_face_shape[CHIN_BOTTOM][1] - face_shape[CHIN_BOTTOM][1]), face_image)
     return muscles
 
 
 if __name__ == "__main__":
-    #musclify(sys.argv[1], sys.argv[2]).save("out.png")
+    # musclify(sys.argv[1], sys.argv[2]).save("out.png")
     hatify(sys.argv[1], sys.argv[2]).save("out.png")
-

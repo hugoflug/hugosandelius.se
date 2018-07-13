@@ -24,25 +24,29 @@ SCRUB_EMOJI = "https://emoji.slack-edge.com/T0QJDQ4MC/sylten/d99fe0d901f540a2.jp
 
 app = Flask(__name__)
 
+
 @app.route('/')
 @app.route('/1337/')
 def index():
     return render_template('index.html', toplist=format1337(top1337()))
 
+
 @app.route('/1337/static/<path:path>')
 def serve_static(path):
     return send_from_directory("static", path)
+
 
 @app.after_request
 def add_cache_control_header(r):
     r.headers['Cache-Control'] = 'no-cache'
     return r
 
+
 def get_name_dic():
     name_dic = {}
 
-    response = requests.get("https://slack.com/api/users.list", 
-        params={"token" : WEB_API_TOKEN})
+    response = requests.get("https://slack.com/api/users.list",
+                            params={"token": WEB_API_TOKEN})
 
     resp = json.loads(response.text)
     for member in resp["members"]:
@@ -50,7 +54,9 @@ def get_name_dic():
 
     return name_dic
 
+
 name_dic = get_name_dic()
+
 
 def format1337(toplist):
     formatted = []
@@ -61,18 +67,21 @@ def format1337(toplist):
 
         if count == 0:
             emoji = SCRUB_EMOJI
-        else: 
+        else:
             emoji = EMOJIS[index - 1] if index - 1 < len(EMOJIS) else EMOJIS[-1]
-        formatted.append({"name" : name, "img" : emoji, "count" : count})
+        formatted.append({"name": name, "img": emoji, "count": count})
     return formatted
+
 
 def ts_to_datetime(ts):
     tz = pytz.timezone("Europe/Stockholm")
     unix_ts = float(ts.split(".")[0])
     return datetime.fromtimestamp(unix_ts, tz)
 
+
 def is_1337(dt):
     return dt.time().hour == 13 and dt.time().minute == 37
+
 
 def top1337():
     try:
@@ -84,7 +93,7 @@ def top1337():
         leetcount = Counter()
         limit_ts = "0"
 
-    resp = None    
+    resp = None
     first_ts = None
     last_ts = None
     last_leet_date = None
@@ -92,12 +101,12 @@ def top1337():
     limit_date = ts_to_datetime(limit_ts)
 
     while not resp or (resp["has_more"] and first_ts > limit_ts):
-        response = requests.get("https://slack.com/api/channels.history", 
-            params={
-                "token" : WEB_API_TOKEN,
-                "channel" : "C0QJC4S74",
-                "latest" : first_ts
-            })
+        response = requests.get("https://slack.com/api/channels.history",
+                                params={
+                                    "token": WEB_API_TOKEN,
+                                    "channel": "C0QJC4S74",
+                                    "latest": first_ts
+                                })
 
         resp = json.loads(response.text)
         for msg in resp["messages"]:
@@ -113,7 +122,7 @@ def top1337():
 
             if "user" in msg and is_1337(dt) and dt.date() != last_leet_date and limit_date != dt.date():
                 lastleeter = msg["user"]
-                
+
             if (not is_1337(dt)) and lastleeter:
                 leetcount[name_dic[lastleeter]] += 1
                 lastleeter = None
@@ -126,13 +135,13 @@ def top1337():
 
     with open(CACHE_DIR + "/1337.json", "w") as cache:
         cache_data = {
-            "ts" : last_ts,
-            "top" : dict(leetcount)    
+            "ts": last_ts,
+            "top": dict(leetcount)
         }
         json.dump(cache_data, cache)
 
     for name in name_dic.values():
         if name not in leetcount:
-            leetcount[name] = 0 
+            leetcount[name] = 0
 
     return sorted(leetcount.items(), key=itemgetter(1), reverse=True)
