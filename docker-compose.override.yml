@@ -5,16 +5,34 @@ services:
       context: hatify
       cache_from:
         - hugosandelius/hatify
+    environment:
+      - FLASK_DEBUG=true
+    volumes:
+      - ${PWD}/hatify:/root/hatify
+    command: [ "uwsgi", "--ini", "uwsgi.ini", "--py-autoreload", "1" ]
+
   tagga:
     build: 
       context: tagga
       cache_from:
         - hugosandelius/tagga
+    environment:
+      - FLASK_DEBUG=true
+    volumes:
+      - ${PWD}/tagga:/root/tagga
+    command: [ "uwsgi", "--ini", "tagga.ini", "--py-autoreload", "1" ]
+
   leet:
     build:
       context: '1337'
       cache_from:
         - hugosandelius/1337
+    environment:
+      - FLASK_DEBUG=true
+    volumes:
+      - ${PWD}/1337:/root/1337
+    command: [ "uwsgi", "--ini", "uwsgi.ini", "--py-autoreload", "1" ]
+
   nginx:  
     build: 
       context: nginx
