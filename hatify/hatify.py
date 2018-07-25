@@ -212,7 +212,7 @@ def search_image(query, start_index=0):
         if response.status_code == 429:
             raise Exception("Rate limit reached on search API!")
         else:
-            raise Exception("Could not perform search, HTTP error: " + str(response.status_code))
+            raise Exception("Could not perform search, HTTP error from search API: " + str(response.status_code))
 
     obj = json.loads(response.text)
 
