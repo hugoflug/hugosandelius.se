@@ -224,7 +224,7 @@ def search_image(query, start_index=0):
     for result in results[start_index:]:
         img_url = result["link"]
         try:
-            img_response = requests.get(img_url, headers={'User-Agent': CHROME_USER_AGENT})
+            img_response = requests.get(img_url, verify=False, headers={'User-Agent': CHROME_USER_AGENT})
         except ConnectionError:
             continue
 
