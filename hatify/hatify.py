@@ -198,15 +198,19 @@ def enhance(image):
     return Image.merge(image.mode, source)
 
 
-SEARCH_ENGINE_URL = "https://api.qwant.com/api/search/images"
+SEARCH_ENGINE_URL = "https://www.googleapis.com/customsearch/v1"
+SEARCH_API_KEY = os.environ["SEARCH_API_KEY"]
+SEARCH_API_ENGINE_ID = os.environ["SEARCH_API_ENGINE_ID"]
 CHROME_USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) " \
                     "Chrome/41.0.2227.1 Safari/537.36"
 
 
 def search_image(query, start_index=0):
     response = requests.get(SEARCH_ENGINE_URL,
-                            headers={'User-Agent': CHROME_USER_AGENT},
-                            params={"count": 50, "q": query})
+                            params={"searchType": "image",
+                                    "cx": SEARCH_API_ENGINE_ID,
+                                    "key": SEARCH_API_KEY,
+                                    "q": query})
 
     if response.status_code != 200:
         if response.status_code == 429:
@@ -216,9 +220,9 @@ def search_image(query, start_index=0):
 
     obj = json.loads(response.text)
 
-    results = obj["data"]["result"]["items"]
+    results = obj["items"]
     for result in results[start_index:]:
-        img_url = result["media"]
+        img_url = result["link"]
         try:
             img_response = requests.get(img_url, headers={'User-Agent': CHROME_USER_AGENT})
         except ConnectionError:

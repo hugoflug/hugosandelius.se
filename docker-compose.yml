@@ -3,6 +3,9 @@ services:
   hatify:
     image: hugosandelius/hatify
     restart: unless-stopped
+    environment:
+      - SEARCH_API_KEY
+      - SEARCH_API_ENGINE_ID
     volumes:
       - static:/static
   tagga:
