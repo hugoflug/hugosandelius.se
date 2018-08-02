@@ -6,6 +6,7 @@ addons:
   ssh_known_hosts: hugosandelius.se
 before_script:
   - docker login -u hugosandelius -p $DOCKERHUB_PASSWD
+  - timeout 120 docker-compose pull || true
   - docker-compose pull || true
 script:
   - docker-compose build
