@@ -1,15 +1,23 @@
 version: '3.2'
 services:
   hatify:
-    image: hugosandelius/hugosandelius.se:hatify
+    image: hugosandelius/hatify
     restart: always
     volumes:
       - static:/static
   tagga:
-    image: hugosandelius/hugosandelius.se:tagga
+    image: hugosandelius/tagga
+    restart: always
+  leet:
+    image: hugosandelius/1337
+    environment:
+      - SLACK_API_TOKEN
+      - CACHE_DIR=/cache
+    volumes:
+      - leetcache:/cache
     restart: always
   nginx: 
-    image: hugosandelius/hugosandelius.se:nginx 
+    image: hugosandelius/nginx 
     restart: always
     ports: 
       - "80:80"
@@ -17,3 +25,4 @@ services:
       - static:/static
 volumes:
   static:
+  leetcache:

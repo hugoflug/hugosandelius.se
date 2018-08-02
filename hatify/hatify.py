@@ -9,6 +9,7 @@ import numpy
 import requests
 import random
 import math
+import traceback
 from threading import Thread
 from PIL import Image, ImageFilter, ImageDraw
 from flask import Flask, jsonify, request, send_from_directory, send_file
@@ -31,7 +32,7 @@ def send_response(out_dir, request_url_root, request_text, response_url, usernam
             'text': "Summoned by *" + username + "*\n" + img_url
         })
     except Exception as e:
-        print(e)
+        traceback.print_exc()
         requests.post(response_url, json = {
             'text': "ERROR: " + str(e)
         })
@@ -56,6 +57,7 @@ def hatify_get(person, hat):
         image.save(filename)
         return send_file(filename, mimetype='image/png')
     except Exception as e:
+        traceback.print_exc()
         return str(e)
 
 @app.route("/musclify/<string:person>", methods=['GET'])
@@ -66,6 +68,7 @@ def musclify_get(person):
         image.save(filename)
         return send_file(filename, mimetype='image/png')
     except Exception as e:
+        traceback.print_exc()
         return str(e)
 
 def send_musclify_response(out_dir, request_url_root, request_text, response_url, username):
@@ -82,7 +85,7 @@ def send_musclify_response(out_dir, request_url_root, request_text, response_url
             'text': "Summoned by *" + username + "*\n" + img_url
         })
     except Exception as e:
-        print(e)
+        traceback.print_exc()
         requests.post(response_url, json = {
             'text': "ERROR: " + str(e)
         })
@@ -110,7 +113,7 @@ predict_face_shape = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat
 
 def get_face_shape(image):
     img = numpy.array(image.convert('L'))
-    faces = detect_faces(img, 2)
+    faces = detect_faces(img)
 
     if len(faces) == 0:
         return None

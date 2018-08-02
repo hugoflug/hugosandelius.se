@@ -1,0 +1,17 @@
+h1 {
+    text-align: center;
+}
+
+.leetlist {
+    font-size: 28px;
+    text-align: left;
+    list-style: none;
+    display: table;
+    margin: 0 auto;
+}
+
+
+body {
+    background-color: black;
+    color: green;
+}

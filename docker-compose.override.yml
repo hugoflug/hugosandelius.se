@@ -5,13 +5,21 @@ services:
       context: hatify
       cache_from:
         - hugosandelius/hugosandelius.se:hatify
+        - hugosandelius/hatify
   tagga:
     build: 
       context: tagga
       cache_from:
         - hugosandelius/hugosandelius.se:tagga
+        - hugosandelius/tagga
+  leet:
+    build:
+      context: '1337'
+      cache_from:
+        - hugosandelius/1337
   nginx:  
     build: 
       context: nginx
       cache_from:
         - hugosandelius/hugosandelius.se:nginx
+        - hugosandelius/nginx
