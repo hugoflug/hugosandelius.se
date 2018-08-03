@@ -8,7 +8,8 @@ SEARCH_API_ENGINE_ID=$SEARCH_API_ENGINE_ID
 EOF
 
 scp docker-compose.yml root@hugosandelius.se:~
-ssh root@hugosandelius.se "docker-compose pull && \
+ssh root@hugosandelius.se "set -x && \
+    docker-compose pull && \
     docker-compose up -d && \
     docker-compose exec -T nginx nginx -s reload && \
     docker image prune -f"
