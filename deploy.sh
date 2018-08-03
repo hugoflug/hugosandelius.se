@@ -10,5 +10,5 @@ EOF
 scp docker-compose.yml root@hugosandelius.se:~
 ssh root@hugosandelius.se "docker-compose pull && \
     docker-compose up -d && \
-    docker-compose exec nginx nginx -s reload && \
+    docker-compose exec -T nginx nginx -s reload && \
     docker image prune -f"
