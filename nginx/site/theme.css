@@ -1,0 +1,24 @@
+h1 {
+    text-align: center;
+}
+
+.featurelist {
+    font-size: 40px;
+    text-align: left;
+    list-style: none;
+    display: table;
+    margin: 0 auto;
+}
+
+body {
+    background-color: #D6EDFF;
+    color: #197278;
+}
+
+a:visited {
+    color: #197278;
+}
+
+a {
+    text-decoration: none;
+}
