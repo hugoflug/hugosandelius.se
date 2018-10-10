@@ -479,6 +479,7 @@ def upload_emoji(file, emoji_name):
             "image": file
         })
 
-    if response.status_code != 200:
-        resp = json.loads(response.text)
+    resp = json.loads(response.text)
+
+    if "error" in resp:
         raise Exception("Could not upload emoji: " + resp["error"])
