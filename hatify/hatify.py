@@ -438,11 +438,14 @@ def emojify_msg():
 
     if event["type"] == "url_verification":
         return event["challenge"]
-    elif event["type"] == "message":
-        if "text" in event:
-            emojis = re.findall(":[^ ]+:", event["text"])
-            for emoji in emojis:
-                emojify(emoji, emoji)
+    elif event["type"] == "event_callback":
+        if "event" in event:
+            inner_event = event["event"]
+
+            if "text" in inner_event:
+                emojis = re.findall(":[^ ]+:", inner_event["text"])
+                for emoji in emojis:
+                    emojify(emoji, emoji)
 
     return ""
 
