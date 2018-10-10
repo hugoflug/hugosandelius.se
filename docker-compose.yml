@@ -6,6 +6,7 @@ services:
     environment:
       - SEARCH_API_KEY
       - SEARCH_API_ENGINE_ID
+      - SLACK_API_EMOJIFY_TOKEN
     volumes:
       - static:/static
   tagga:

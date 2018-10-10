@@ -1,7 +1,5 @@
-import sys
 import os
 import os.path
-import json
 import urllib.parse
 import io
 import dlib
@@ -10,6 +8,7 @@ import requests
 import random
 import math
 import traceback
+import json
 from threading import Thread
 from PIL import Image, ImageDraw
 from flask import Flask, request, send_from_directory, send_file
@@ -201,6 +200,7 @@ def enhance(image):
 SEARCH_ENGINE_URL = "https://www.googleapis.com/customsearch/v1"
 SEARCH_API_KEY = os.environ["SEARCH_API_KEY"]
 SEARCH_API_ENGINE_ID = os.environ["SEARCH_API_ENGINE_ID"]
+SLACK_API_EMOJIFY_TOKEN = os.environ["SLACK_API_EMOJIFY_TOKEN"]
 CHROME_USER_AGENT = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_10_1) AppleWebKit/537.36 (KHTML, like Gecko) " \
                     "Chrome/41.0.2227.1 Safari/537.36"
 
@@ -431,6 +431,52 @@ def musclify(query, guy_query="muscle guy"):
     return muscles
 
 
-if __name__ == "__main__":
-    # musclify(sys.argv[1], sys.argv[2]).save("out.png")
-    hatify(sys.argv[1], sys.argv[2]).save("out.png")
+@app.route("/emojify", methods=['POST'])
+def emojify_resource():
+    request_text = request.form['text']
+    response_url = request.form['response_url']
+    username = request.form['user_name']
+
+    thread = Thread(target=send_emojify_response, args=(request_text, response_url, username))
+    thread.start()
+
+    return "Hold on..."
+
+
+def send_emojify_response(request_text, response_url, username):
+    try:
+        emojify(request_text, request_text)
+
+        requests.post(response_url, json={
+            'response_type': 'in_channel',
+            'text': "Requested by *" + username + "*\n" + ":" + request_text + ":"
+        })
+    except Exception as e:
+        traceback.print_exc()
+        requests.post(response_url, json={
+            'text': "ERROR: " + str(e)
+        })
+
+
+def emojify(query, emoji_name):
+    for image in search_image(query):
+        face = find_face(image)
+        if face:
+            face.save("tmp.png")
+            upload_emoji(open("tmp.png", "rb"), emoji_name)
+            break
+
+
+def upload_emoji(file, emoji_name):
+    response = requests.post("https://slack.com/api/emoji.add",
+        data={
+            'token': SLACK_API_EMOJIFY_TOKEN,
+            'mode': 'data',
+            'name': emoji_name,
+        }, files={
+            "image": file
+        })
+
+    if response.status_code != 200:
+        resp = json.loads(response.text)
+        raise Exception("Could not upload emoji: " + resp["error"])
