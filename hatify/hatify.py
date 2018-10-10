@@ -432,6 +432,21 @@ def musclify(query, guy_query="muscle guy"):
     return muscles
 
 
+@app.route("/emojify_msg", methods=['POST'])
+def emojify_msg():
+    event = request.json
+
+    if event["type"] == "url_verification":
+        return event["challenge"]
+    elif event["type"] == "message":
+        if "text" in event:
+            emojis = re.findall(":[^ ]+:", event["text"])
+            for emoji in emojis:
+                emojify(emoji, emoji)
+
+    return ""
+
+
 @app.route("/emojify", methods=['POST'])
 def emojify_resource():
     request_text = request.form['text']
