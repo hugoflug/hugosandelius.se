@@ -9,6 +9,7 @@ import random
 import math
 import traceback
 import json
+import re
 from threading import Thread
 from PIL import Image, ImageDraw
 from flask import Flask, request, send_from_directory, send_file
@@ -466,7 +467,7 @@ def emojify(query, emoji_name):
         if face:
             face.save("tmp.png")
             upload_emoji(open("tmp.png", "rb"), emoji_name)
-            break
+            return
 
     raise Exception("No face found for: " + query)
 
