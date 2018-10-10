@@ -445,11 +445,13 @@ def emojify_resource():
 
 def send_emojify_response(request_text, response_url, username):
     try:
-        emojify(request_text, request_text)
+        emoji_name = request_text.replace(" ", "_")
+
+        emojify(request_text, emoji_name)
 
         requests.post(response_url, json={
             'response_type': 'in_channel',
-            'text': "Requested by *" + username + "*\n" + ":" + request_text + ":"
+            'text': "Requested by *" + username + "*\n" + ":" + emoji_name + ":"
         })
     except Exception as e:
         traceback.print_exc()
