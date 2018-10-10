@@ -468,6 +468,8 @@ def emojify(query, emoji_name):
             upload_emoji(open("tmp.png", "rb"), emoji_name)
             break
 
+    raise Exception("No face found for: " + query)
+
 
 def upload_emoji(file, emoji_name):
     response = requests.post("https://slack.com/api/emoji.add",
