@@ -439,13 +439,14 @@ def emojify_msg():
     if event["type"] == "url_verification":
         return event["challenge"]
     elif event["type"] == "event_callback":
-        if "event" in event:
-            inner_event = event["event"]
+        inner_event = event["event"]
 
-            if "text" in inner_event:
-                emojis = re.findall(":[^ ]+:", inner_event["text"])
-                for emoji in emojis:
-                    emojify(emoji, emoji)
+        existing_emojis = get_emoji_list()
+
+        emojis = re.findall(":[^ ]+:", inner_event["text"])
+        for emoji in emojis:
+            if emoji not in existing_emojis:
+                emojify(emoji, emoji)
 
     return ""
 
@@ -492,15 +493,21 @@ def emojify(query, emoji_name):
 
 def upload_emoji(file, emoji_name):
     response = requests.post("https://slack.com/api/emoji.add",
-        data={
-            'token': SLACK_API_EMOJIFY_TOKEN,
-            'mode': 'data',
-            'name': emoji_name,
-        }, files={
-            "image": file
-        })
+                             data={
+                                 'token': SLACK_API_EMOJIFY_TOKEN,
+                                 'mode': 'data',
+                                 'name': emoji_name,
+                             }, files={
+                                 "image": file
+                             })
 
     resp = json.loads(response.text)
 
     if "error" in resp:
         raise Exception("Could not upload emoji: " + resp["error"])
+
+
+def get_emoji_list():
+    response = requests.get("https://slack.com/api/emoji.list", params={"token": SLACK_API_EMOJIFY_TOKEN})
+    resp = json.loads(response.text)
+    return resp["emoji"]
