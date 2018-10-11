@@ -443,7 +443,7 @@ def emojify_msg():
 
         existing_emojis = get_emoji_list()
 
-        emojis = re.findall(":[^ ]+:", inner_event["text"])
+        emojis = [s[1:-1] for s in re.findall(":[^ ]+:", inner_event["text"])]
         for emoji in emojis:
             if emoji not in existing_emojis:
                 emojify(emoji, emoji)
