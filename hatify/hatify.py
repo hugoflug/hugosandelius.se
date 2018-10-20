@@ -465,9 +465,14 @@ def emojify_resource():
 
 def send_emojify_response(request_text, response_url, username):
     try:
-        emoji_name = request_text.replace(" ", "_")
+        req_text_parts = request_text.split(" ")
+        emoji_name = req_text_parts[0]
 
-        emojify(request_text, emoji_name)
+        if len(req_text_parts) == 1:
+            emojify(request_text, emoji_name)
+        else:
+            image_url = req_text_parts[1]
+            emojify_from_url(emoji_name, image_url)
 
         requests.post(response_url, json={
             'response_type': 'in_channel',
@@ -478,6 +483,20 @@ def send_emojify_response(request_text, response_url, username):
         requests.post(response_url, json={
             'text': "ERROR: " + str(e)
         })
+
+
+def emojify_from_url(emoji_name, image_url):
+    img_response = requests.get(image_url, verify=False, headers={'User-Agent': CHROME_USER_AGENT})
+
+    if img_response.status_code != 200:
+        raise Exception("HTTP error code: " + img_response.status_code)
+
+    img = Image.open(io.BytesIO(img_response.content)).convert("RGBA")
+
+    face = find_face(img)
+
+    face.save("tmp.png")
+    upload_emoji(open("tmp.png", "rb"), emoji_name)
 
 
 def emojify(query, emoji_name):
