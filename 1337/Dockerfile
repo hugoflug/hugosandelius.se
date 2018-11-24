@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ubuntu:xenial-20181113
 WORKDIR /root/1337
 RUN apt-get update && apt-get install -y \
     python3 \
