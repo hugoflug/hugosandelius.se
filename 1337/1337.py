@@ -1,12 +1,11 @@
 import requests
 import json
 import pytz
-import time
-import os
+import os.path
 from datetime import datetime
-from collections import Counter
 from operator import itemgetter
-from flask import Flask, render_template, send_from_directory
+from collections import Counter
+from flask import Flask, request, render_template, send_from_directory
 
 WEB_API_TOKEN = os.environ["SLACK_API_TOKEN"]
 CACHE_DIR = os.getenv("CACHE_DIR", ".")
@@ -20,6 +19,7 @@ EMOJIS = [
 ]
 
 SCRUB_EMOJI = "https://emoji.slack-edge.com/T0QJDQ4MC/sylten/d99fe0d901f540a2.jpg"
+
 
 app = Flask(__name__)
 
@@ -81,64 +81,52 @@ def is_1337(dt):
     return dt.time().hour == 13 and dt.time().minute == 37
 
 
+def read_cache():
+    with open(CACHE_DIR + "/1337.json", 'r') as cache:
+        cache_json = json.load(cache)
+
+    return Counter(cache_json["top"]), cache_json["ts"]
+
+
+def write_cache(leetcounts, timestamp):
+    with open(CACHE_DIR + "/1337.json", 'w') as cache:
+        json.dump({
+            "ts": timestamp,
+            "top": dict(leetcounts)
+        }, cache)
+
+
+if not os.path.isfile(CACHE_DIR + "/1337.json"):
+    write_cache({}, "0.0")
+
+
+@app.route("/1337_event", methods=['POST'])
+def leet_event():
+    event = request.json
+
+    if event["type"] == "url_verification":
+        return event["challenge"]
+    elif event["type"] == "event_callback":
+        inner_event = event["event"]
+        event_ts = inner_event["event_ts"]
+        event_datetime = ts_to_datetime(event_ts)
+
+        if is_1337(event_datetime):
+            leetcounts, cache_ts = read_cache()
+            cache_datetime = ts_to_datetime(cache_ts)
+
+            if event_datetime.date() > cache_datetime.date():
+                leetcounts[name_dic[inner_event["user"]]] += 1
+                write_cache(leetcounts, event_ts)
+
+    return ""
+
+
 def top1337():
-    try:
-        with open(CACHE_DIR + "/1337.json") as cache:
-            cache_json = json.load(cache)
-            leetcount = Counter(cache_json["top"])
-            limit_ts = cache_json["ts"]
-    except IOError:
-        leetcount = Counter()
-        limit_ts = "0"
-
-    resp = None
-    first_ts = None
-    last_ts = None
-    last_leet_date = None
-    lastleeter = None
-    limit_date = ts_to_datetime(limit_ts)
-
-    while not resp or (resp["has_more"] and first_ts > limit_ts):
-        response = requests.get("https://slack.com/api/channels.history",
-                                params={
-                                    "token": WEB_API_TOKEN,
-                                    "channel": "C0QJC4S74",
-                                    "latest": first_ts
-                                })
-
-        resp = json.loads(response.text)
-        for msg in resp["messages"]:
-            first_ts = msg["ts"]
-
-            if not last_ts:
-                last_ts = msg["ts"]
-
-            if first_ts <= limit_ts:
-                break
-
-            dt = ts_to_datetime(first_ts)
-
-            if "user" in msg and is_1337(dt) and dt.date() != last_leet_date and limit_date != dt.date():
-                lastleeter = msg["user"]
-
-            if (not is_1337(dt)) and lastleeter:
-                leetcount[name_dic[lastleeter]] += 1
-                lastleeter = None
-
-        time.sleep(1)
-
-    if lastleeter:
-        leetcount[name_dic[lastleeter]] += 1
-
-    with open(CACHE_DIR + "/1337.json", "w") as cache:
-        cache_data = {
-            "ts": last_ts,
-            "top": dict(leetcount)
-        }
-        json.dump(cache_data, cache)
+    leetcounts = read_cache()[0]
 
     for name in name_dic.values():
-        if name not in leetcount:
-            leetcount[name] = 0
+        if name not in leetcounts:
+            leetcounts[name] = 0
 
-    return sorted(leetcount.items(), key=itemgetter(1), reverse=True)
+    return sorted(leetcounts.items(), key=itemgetter(1), reverse=True)
