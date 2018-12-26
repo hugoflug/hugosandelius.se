@@ -38,4 +38,9 @@ server {
         proxy_pass http://leet;
         proxy_set_header Host $host;
     }
+
+    location /1337_event {
+        proxy_pass http://leet;
+        proxy_set_header Host $host;
+    }
 }
