@@ -7,8 +7,10 @@ from operator import itemgetter
 from collections import Counter
 from flask import Flask, request, render_template, send_from_directory
 
+SLACK_BOT_TOKEN = os.environ["SLACK_BOT_TOKEN"]
 WEB_API_TOKEN = os.environ["SLACK_API_TOKEN"]
 CACHE_DIR = os.getenv("CACHE_DIR", ".")
+GENERAL_CHANNEL = "C0QJC4S74"
 
 EMOJIS = [
     "https://emoji.slack-edge.com/T0QJDQ4MC/hackerman-matrix/79021d6f4a7c07e4.gif",
@@ -100,6 +102,15 @@ if not os.path.isfile(CACHE_DIR + "/1337.json"):
     write_cache({}, "0.0")
 
 
+def post_bot_message(msg):
+    requests.post("https://slack.com/api/chat.postMessage",
+                  data={"token": SLACK_BOT_TOKEN,
+                        "channel": GENERAL_CHANNEL,
+                        "username": "1337bot",
+                        "icon_emoji": ":1337_hacker:",
+                        "text": msg})
+
+
 @app.route("/1337_event", methods=['POST'])
 def leet_event():
     event = request.json
@@ -116,7 +127,13 @@ def leet_event():
             cache_datetime = ts_to_datetime(cache_ts)
 
             if event_datetime.date() > cache_datetime.date():
-                leetcounts[name_dic[inner_event["user"]]] += 1
+                user = name_dic[inner_event["user"]]
+                leetcounts[user] += 1
+
+                if event_datetime.year > cache_datetime.year:
+                    post_bot_message("ÅRETS FÖRSTA LEET! 10 bonuspoäng!!! :firework::sparkler::parrot:")
+                    leetcounts[user] += 10
+
                 write_cache(leetcounts, event_ts)
 
     return ""

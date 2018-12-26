@@ -16,6 +16,7 @@ services:
     image: hugosandelius/1337
     environment:
       - SLACK_API_TOKEN
+      - SLACK_BOT_TOKEN
     volumes:
       - leetcache:/cache
     restart: unless-stopped
