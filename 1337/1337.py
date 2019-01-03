@@ -2,6 +2,7 @@ import requests
 import json
 import pytz
 import os.path
+import random
 from datetime import datetime
 from operator import itemgetter
 from collections import Counter
@@ -127,6 +128,10 @@ def leet_event():
             cache_datetime = ts_to_datetime(cache_ts)
 
             if event_datetime.date() > cache_datetime.date():
+                if random.random() < 0.1:
+                    post_bot_message("Nänänä, den där går bort i skatt. Alla ska med :lofven:")
+                    return ""
+
                 user = name_dic[inner_event["user"]]
                 leetcounts[user] += 1
 
