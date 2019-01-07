@@ -3,8 +3,9 @@ WORKDIR /root/tagga
 RUN apt-get update && apt-get install -y \
     ffmpeg \
     python3 \
-    python3-pip 
+    python3-pip
 
+RUN pip3 install setuptools==40.6.3
 COPY requirements.txt .
 RUN pip3 install -r requirements.txt
 
