@@ -128,11 +128,17 @@ def leet_event():
             cache_datetime = ts_to_datetime(cache_ts)
 
             if event_datetime.date() > cache_datetime.date():
-                if random.random() < 0.1:
+                user = name_dic[inner_event["user"]]
+
+                rand_value = random.random()
+                if rand_value < 0.1:
                     post_bot_message("Nänänä, den där går bort i skatt. Alla ska med :lofven:")
                     return ""
+                elif 0.1 < rand_value < 0.15:
+                    post_bot_message("https://www.youtube.com/watch?v=-08tQxlrYiI")
+                    post_bot_message("3 poäng tillbaka på skatten!!")
+                    leetcounts[user] += 3
 
-                user = name_dic[inner_event["user"]]
                 leetcounts[user] += 1
 
                 if event_datetime.year > cache_datetime.year:
