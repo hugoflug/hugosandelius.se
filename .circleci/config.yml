@@ -3,6 +3,10 @@ jobs:
   build:
     docker:
       - image: circleci/python:3.6.1
+    filters:
+      branches:
+        only:
+          - master
     steps:
       - setup_remote_docker
       - checkout
