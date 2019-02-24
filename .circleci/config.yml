@@ -18,6 +18,7 @@ jobs:
           fingerprints:
             - "a1:0e:d7:ed:fd:50:75:c5:52:d7:06:21:bd:d2:f2:e8"
       - run:
+          name: Add SSH key to known_hosts file
           command: echo "hugosandelius.se ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC0LHe11qHmsQcWLjH0bqmc8kAftPc65vu7i2hak+gq3/FzuKQtCoU3NsR2A4RAiFVxShF9SsXBfLO+zc5Lcry6wVzkfm/c/GD0bFWYc7zbUk2Yxey+aR3drJm2bjReEfr9vuNcs1hZT42gc+H6XPPOjtdm1Ne6OMnZxAiIkkCFjDkr49jPYwcwJL274odtaXfoHNn8eFx65vYCEcJZsbMNqx+18QeHYxtbl4VGFlSRqmXYZaBlJg25f3jfFHMVf0twFzSaNUVLEkgfGmwlOM48Gq5UfSW4HDtpGU6TyTy8zZYGxpv+Jm/8voRjPj8oZPi5JqEE1OWa0VKaskFbTJ/X" >> ~/.ssh/known_hosts
       - run:
           name: Deploy
