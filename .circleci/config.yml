@@ -14,6 +14,9 @@ jobs:
             docker-compose pull
             docker-compose build
             docker-compose push
+      - add_ssh_keys:
+          fingerprints:
+            - "a1:0e:d7:ed:fd:50:75:c5:52:d7:06:21:bd:d2:f2:e8"
       - run:
           name: Deploy
           command: ./deploy.sh
