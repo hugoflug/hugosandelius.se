@@ -5,8 +5,8 @@ jobs:
       - image: circleci/python:3.6.1
 
     steps:
+      - setup_remote_docker
       - checkout
-
       - run:
           name: Build
           command: |
@@ -14,7 +14,6 @@ jobs:
             docker-compose pull
             docker-compose build
             docker-compose push
-
       - run:
           name: Deploy
           command: ./deploy.sh
