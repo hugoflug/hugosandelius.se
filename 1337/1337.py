@@ -157,8 +157,9 @@ def leet_event():
 
 def is_user_top_5_leeter(user):
     top_leeters = sorted(read_cache()[0].items(), key=itemgetter(1), reverse=True)
+    leeter_names_ordered_by_richness = [l[0] for l in top_leeters]
     for i in range(5):
-        top_five_leeter = top_leeters[i]
+        top_five_leeter = leeter_names_ordered_by_richness[i]
         if user == top_five_leeter:
             return True
     return False
@@ -166,7 +167,7 @@ def is_user_top_5_leeter(user):
 
 def get_user_to_receive_charity():
     bottom_leeters = sorted(read_cache()[0].items(), key=itemgetter(1), reverse=False)
-    leeter_names_ordered_by_poorness = list(bottom_leeters.keys())
+    leeter_names_ordered_by_poorness = [l[0] for l in bottom_leeters]
     index_of_user_to_get_leet = random.randint(0, 2)
     return leeter_names_ordered_by_poorness[index_of_user_to_get_leet]
 
