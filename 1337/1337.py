@@ -157,9 +157,8 @@ def leet_event():
 
 def is_user_top_5_leeter(user):
     top_leeters = sorted(read_cache()[0].items(), key=itemgetter(1), reverse=True)
-    leeter_names_ordered_by_richness = list(top_leeters.keys())
     for i in range(5):
-        top_five_leeter = leeter_names_ordered_by_richness[i]
+        top_five_leeter = top_leeters[i]
         if user == top_five_leeter:
             return True
     return False
