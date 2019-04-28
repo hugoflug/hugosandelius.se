@@ -138,8 +138,13 @@ def leet_event():
                     post_bot_message("https://www.youtube.com/watch?v=-08tQxlrYiI")
                     post_bot_message("3 poäng tillbaka på skatten!!")
                     leetcounts[user] += 3
-
-                leetcounts[user] += 1
+                elif 0.15 < rand_value < 0.25 and is_user_top_5_leeter(user):
+                    user_to_recieve_charity = get_user_to_receive_charity()
+                    post_bot_message("Dags att ge tillbaks till samhället, fattiga " + user_to_recieve_charity +
+                                     " behöver denna leet mer än dig")
+                    leetcounts[user_to_recieve_charity] += 1
+                else:
+                    leetcounts[user] += 1
 
                 if event_datetime.year > cache_datetime.year:
                     post_bot_message("ÅRETS FÖRSTA LEET! 10 bonuspoäng!!! :firework::sparkler::parrot:")
@@ -148,6 +153,23 @@ def leet_event():
                 write_cache(leetcounts, event_ts)
 
     return ""
+
+
+def is_user_top_5_leeter(user):
+    top_leeters = sorted(read_cache()[0].items(), key=itemgetter(1), reverse=True)
+    leeter_names_ordered_by_richness = list(top_leeters.keys())
+    for i in range(5):
+        top_five_leeter = leeter_names_ordered_by_richness[i]
+        if user == top_five_leeter:
+            return True
+    return False
+
+
+def get_user_to_receive_charity():
+    bottom_leeters = sorted(read_cache()[0].items(), key=itemgetter(1), reverse=False)
+    leeter_names_ordered_by_poorness = list(bottom_leeters.keys())
+    index_of_user_to_get_leet = random.randint(0, 2)
+    return leeter_names_ordered_by_poorness[index_of_user_to_get_leet]
 
 
 def top1337():
