@@ -132,7 +132,7 @@ def leet_event():
                 post_bot_message("-3 poäng")
                 leetcounts[user] -= 3
 
-                write_cache(leetcounts, event_ts)
+                write_cache(leetcounts, cache_ts)
                 return ""
 
         if is_1337(event_datetime):
