@@ -127,8 +127,7 @@ def leet_event():
 
         if "edited" in inner_event:
             leetcounts, cache_ts = read_cache()
-            edit_ts = inner_event["edited"]["ts"]
-            if edit_ts == cache_ts:
+            if inner_event["ts"] == cache_ts:
                 post_bot_message("Jag såg")
                 post_bot_message("-3 poäng")
                 leetcounts[user] -= 3
