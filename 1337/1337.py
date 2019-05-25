@@ -123,11 +123,12 @@ def leet_event():
         event_ts = inner_event["event_ts"]
         event_datetime = ts_to_datetime(event_ts)
 
-        user = name_dic[inner_event["user"]]
+        if inner_event.get("subtype") == "message_changed":
+            message = inner_event["message"]
+            user = name_dic[message["user"]]
 
-        if "edited" in inner_event:
             leetcounts, cache_ts = read_cache()
-            if inner_event["ts"] == cache_ts:
+            if message["ts"] == cache_ts:
                 post_bot_message("Jag såg")
                 post_bot_message("-3 poäng")
                 leetcounts[user] -= 3
@@ -138,6 +139,8 @@ def leet_event():
         if is_1337(event_datetime):
             leetcounts, cache_ts = read_cache()
             cache_datetime = ts_to_datetime(cache_ts)
+
+            user = name_dic[inner_event["user"]]
 
             if event_datetime.date() > cache_datetime.date():
                 rand_value = random.random()
