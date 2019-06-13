@@ -112,6 +112,16 @@ def post_bot_message(msg):
                         "text": msg})
 
 
+def leet_messages(user):
+    return ["*" + user + "* kan man 1337a på :sunglasses:",
+            "*" + user + "* är 1337e vassare än resten :lennart:",
+            "Årets 1337eraturpristagare: *" + user + "* :kungen::medal:",
+            "Man skulle kunnna tro att *" + user + "* är från 1337auen :flag-lt:",
+            "En 1337er jolt till " + user + " :1337_hacker:",
+            "1337iumbatterier nånting nånting " + user,
+            "Alla utom " + user + " är 1337erally hitler :hitler::yohitler::sad_hitler::mexihitler::sylt-hitler::adolf_hitler::kanalhitler::analhitler:"]
+
+
 @app.route("/1337_event", methods=['POST'])
 def leet_event():
     event = request.json
@@ -141,6 +151,8 @@ def leet_event():
             cache_datetime = ts_to_datetime(cache_ts)
 
             user = name_dic[inner_event["user"]]
+
+            post_bot_message(random.choice(leet_messages(user)))
 
             if event_datetime.date() > cache_datetime.date():
                 rand_value = random.random()
