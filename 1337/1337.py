@@ -117,9 +117,12 @@ def leet_messages(user):
             "*" + user + "* är 1337e vassare än resten :lennart:",
             "Årets 1337eraturpristagare: *" + user + "* :kungen::medal:",
             "Man skulle kunnna tro att *" + user + "* är från 1337auen :flag-lt:",
-            "En 1337er jolt till " + user + " :1337_hacker:",
-            "1337iumbatterier nånting nånting " + user,
-            "Alla utom " + user + " är 1337erally hitler :hitler::yohitler::sad_hitler::mexihitler::sylt-hitler::adolf_hitler::kanalhitler::analhitler:"]
+            "En 1337er jolt till *" + user + "* :1337_hacker:",
+            "1337iumbatterier nånting nånting *" + user + "*",
+            "*" + user + "* är riktigt f1337ig :de-e-najs:",
+            "*" + user + "* blir aldrig sl1337en :korvsnubbe:",
+            "*" + user + "* tillhör e1337en :bogdan_von_knorring:",
+            "Alla utom *" + user + "* är 1337erally hitler :hitler::yohitler::sad_hitler::mexihitler::sylt-hitler::adolf_hitler::kanalhitler::analhitler:"]
 
 
 @app.route("/1337_event", methods=['POST'])
@@ -152,9 +155,9 @@ def leet_event():
 
             user = name_dic[inner_event["user"]]
 
-            post_bot_message(random.choice(leet_messages(user)))
-
             if event_datetime.date() > cache_datetime.date():
+                post_bot_message(random.choice(leet_messages(user)))
+
                 rand_value = random.random()
                 if rand_value < 0.1:
                     post_bot_message("Nänänä, den där går bort i skatt. Alla ska med :lofven:")
