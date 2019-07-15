@@ -3,7 +3,7 @@ import json
 import pytz
 import os.path
 import random
-from datetime import datetime
+from datetime import datetime, timedelta
 from operator import itemgetter
 from collections import Counter
 from flask import Flask, request, render_template, send_from_directory
@@ -178,6 +178,12 @@ def leet_event():
                     post_bot_message("ÅRETS FÖRSTA LEET! 10 bonuspoäng!!! :firework::sparkler::parrot:")
                     leetcounts[user] += 10
 
+                write_cache(leetcounts, event_ts)
+
+            elif event_datetime.date() == cache_datetime.date() and \
+                    event_datetime < cache_datetime + timedelta(seconds=3):
+                post_bot_message("*" + user + "* suger. -1 poäng :lofven:")
+                leetcounts[user] -= 1
                 write_cache(leetcounts, event_ts)
 
     return ""
