@@ -178,6 +178,13 @@ def leet_event():
                     post_bot_message("ÅRETS FÖRSTA LEET! 10 bonuspoäng!!! :firework::sparkler::parrot:")
                     leetcounts[user] += 10
 
+                if event_datetime.month == 5 and event_datetime.day == 8:
+                    post_bot_message("haha 1337 printer go brrrrr")
+                    for user in name_dic.values():
+                        post_bot_message("*" + user + "* får 20 poäng!!!")
+                        leetcounts[user] += 20
+                    post_bot_message("https://i.imgur.com/y1Wx8JH.gif")
+
                 write_cache(leetcounts, event_ts)
 
             elif event_datetime.date() == cache_datetime.date() and \
