@@ -13,6 +13,19 @@ WEB_API_TOKEN = os.environ["SLACK_API_TOKEN"]
 CACHE_DIR = os.getenv("CACHE_DIR", ".")
 GENERAL_CHANNEL = "C0QJC4S74"
 
+USER_ID = [
+    "U0QJC3B0B",
+    "U1B0XJRFV",
+    "U0ZCG4881",
+    "U0QJ6PSG4",
+    "U0QJC7W95",
+    "U1AU2MZD1",
+    "U0QJ9TV7V",
+    "U0QJC372P",
+    "U0XML7C4R",
+    "U0QJBCJ3E"
+]
+
 EMOJIS = [
     "https://emoji.slack-edge.com/T0QJDQ4MC/hackerman-matrix/79021d6f4a7c07e4.gif",
     "https://emoji.slack-edge.com/T0QJDQ4MC/hackerman_triggered/b1951faae08e5b77.gif",
@@ -92,6 +105,8 @@ def read_cache():
 
 
 def write_cache(leetcounts, timestamp):
+    #Risky
+    validate_1337dic()
     with open(CACHE_DIR + "/1337.json", 'w') as cache:
         json.dump({
             "ts": timestamp,
@@ -158,6 +173,14 @@ def leet_event():
             if event_datetime.date() > cache_datetime.date():
                 post_bot_message(random.choice(leet_messages(user)))
 
+                if is_Birthday(event_datetime.month, event_datetime.day):
+                    user = is_Birthday(event_datetime.month, event_datetime.day)
+                    leetcounts[user] += 10
+                    post_bot_message("https://i.imgur.com/cSazQ8Y.gif")
+                    post_bot_message(user + "* fyller fucking år!!!     (igen)")
+                    write_cache(leetcounts, event_ts)
+                    return ""
+
                 rand_value = random.random()
                 if rand_value < 0.1:
                     post_bot_message("Nänänä, den där går bort i skatt. Alla ska med :lofven:")
@@ -221,3 +244,43 @@ def top1337():
             leetcounts[name] = 0
 
     return sorted(leetcounts.items(), key=itemgetter(1), reverse=True)
+
+def validate_1337dic():
+    for id in name_dic.values():
+        if id not in USER_ID
+        del name_dic[id]
+    return ""
+
+def is_birthday(month, day):
+    #Sylten
+    if month == 1 and day == 11:
+        return name_dic["U0QJC3B0B"]
+    #Anton
+    elif month == 1 and day == 27:
+        return name_dic["U1B0XJRFV"]
+    #Stefan
+    elif month == 3 and day == 13:
+        return name_dic["U0ZCG4881"]
+    #Arvid
+    elif month == 3 and day == 15:
+        return name_dic["U0QJ6PSG4"]
+    #Freya
+    elif month == 4 and day == 4:
+        return name_dic["U0QJC7W95"]
+    #Johan
+    elif month == 5 and day == 13:
+        return name_dic["U1AU2MZD1"]
+    #Borgen
+    elif month == 7 and day == 1:
+        return name_dic["U0QJ9TV7V"]
+    #Niffe
+    elif month == 10 and day == 14:
+        return name_dic["U0QJC372P"]
+    #Niclaz
+    elif month == 11 and day == 18:
+        return name_dic["U0XML7C4R"]
+    #Hugo
+    elif month == 12 and day == 3:
+        return name_dic["U0QJBCJ3E"]
+
+    return ""
