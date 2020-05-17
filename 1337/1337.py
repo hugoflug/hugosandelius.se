@@ -177,7 +177,7 @@ def leet_event():
                     user = is_Birthday(event_datetime.month, event_datetime.day)
                     leetcounts[user] += 10
                     post_bot_message("https://i.imgur.com/cSazQ8Y.gif")
-                    post_bot_message(user + "* fyller fucking år!!!     (igen)")
+                    post_bot_message("*" + user + "* fyller fucking år!!!     (igen)")
                     write_cache(leetcounts, event_ts)
                     return ""
 
@@ -247,9 +247,8 @@ def top1337():
 
 def validate_1337dic():
     for id in name_dic.values():
-        if id not in USER_ID
-        del name_dic[id]
-    return ""
+        if id not in USER_ID:
+            del name_dic[id]
 
 def is_birthday(month, day):
     #Sylten
@@ -282,5 +281,3 @@ def is_birthday(month, day):
     #Hugo
     elif month == 12 and day == 3:
         return name_dic["U0QJBCJ3E"]
-
-    return ""
